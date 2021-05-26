@@ -21,7 +21,6 @@ const Homescreen = ({ route, navigation }) => {
   const [getfinalprice, setfinalprice] = useState(0);
   const [getprice, setprice] = useState('');
   const [getredPrice, setredPrice] = useState('');
-
   const [getitemHint, setitemHint] = useState('');
   const [getDiscHint, setDiscHint] = useState('');
 
@@ -64,6 +63,7 @@ const Homescreen = ({ route, navigation }) => {
   };
 
   const SaveData = () => {
+  
     var finalobj = {
       itemkey: Math.random().toString(),
       OG_Price: getprice,
@@ -74,6 +74,7 @@ const Homescreen = ({ route, navigation }) => {
     data.push(finalobj);
 
     setprice('');
+
     setredPrice('');
   };
 
@@ -100,11 +101,11 @@ const Homescreen = ({ route, navigation }) => {
         />
         <Text style={styles.hint}> {getDiscHint} </Text>
 
-        <View style={styles.result}>
+        <View style={styles.final}>
           <Text style={styles.newdata}> MONEY SAVED </Text>
           <Text style={styles.newdata}> {getDiscValue} </Text>
         </View>
-        <View style={styles.result}>
+        <View style={styles.final}>
           <Text style={styles.newdata}> NEW PRICE </Text>
           <Text style={styles.newdata}> {getfinalprice} </Text>
         </View>
@@ -127,7 +128,7 @@ const Homescreen = ({ route, navigation }) => {
   );
 };
 
-const Historyscreen = ({ navigation }) => {
+const Historyscreen = ({ route, navigation }) => {
   const [getClearedList, setClearedList] = useState(data);
 
   navigation.setOptions({
@@ -135,17 +136,11 @@ const Historyscreen = ({ navigation }) => {
       <Button
         title="CLEAR"
         color="maroon"
-        onPress={() =>
-          Alert.alert(
-            'You are sure to delete?',
-            'Are you sure to delete the history?',
+        onPress={() =>Alert.alert('DELETE:','Confirm delete history?',
             [
-              {
-                text: 'Cancel',
-              
+              {text: 'CANCEL',              
               },
-              {
-                text: 'Yes',
+              {text: 'CONFIRM',
                 onPress: () => {setClearedList([]);
                   data = [];
                 },
@@ -156,7 +151,6 @@ const Historyscreen = ({ navigation }) => {
       />
     ),
   });
-
   const deleteitem = (itemkey) => {
 
     var list = getClearedList.filter((item) => item.itemkey != itemkey);
@@ -165,41 +159,43 @@ const Historyscreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.recordrow}>
+    <View style={{ flex: 1,
+    justifyContent: 'center'}}>
+      <View style={{flexDirection: 'row',justifyContent: 'space-between'}}>
+        
         <Text style={styles.header}> OG_Price - </Text>
         <Text style={styles.header}> Discount = </Text>
         <Text style={styles.header}> Final Price </Text>
         <Text> </Text>
       </View>
       <ScrollView>
+
         {getClearedList.map((item) => (
-          <TouchableOpacity itemkey={item.itemkey} onPress={() => deleteitem(item.itemkey)}>
-            <View style={styles.recordrow}>
-              <Text style={styles.ogcolumn}> {item.OG_Price} </Text>
-              <Text style={styles.discountcolumn}> {item.disc} % </Text>
+          <TouchableOpacity
+           itemkey={item.itemkey} onPress={() => deleteitem(item.itemkey)}>
+            <View style={{flexDirection: 'row',justifyContent: 'space-between'}}>
+                
+              <Text style={{marginLeft: '5%' }}> {item.OG_Price} </Text>
+              <Text style={{marginLeft: '8%'}}> {item.disc} % </Text>
               <Text style={styles.midcol}> {item.finalamount} </Text>
-              <Text style={styles.finalcolumn}> X </Text>
+              <Text style={styles.del}> ␡ </Text>
             </View>
           </TouchableOpacity>
         ))}
+
       </ScrollView>
     </View>
   );
 };
 
 const Stack = createStackNavigator();
-
-export default function App({ route, navigation }) {
-  const [getdum, setdum] = useState(0);
+export default function App({ route, navigation }) {  
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'homescreen'}>
-          <Stack.Screen
-            name="homescreen"
-            component={Homescreen}
-            options={({ navigation }) => ({
+        <Stack.Navigator >
+          <Stack.Screen  name="homescreen"  component={Homescreen} 
+           options={({ navigation }) => ({
               headerTitle: 'MY DISCOUNT DIARY',
               headerStyle: {
                 backgroundColor: 'lightcoral',
@@ -222,7 +218,7 @@ export default function App({ route, navigation }) {
             name="historyscreen"
             component={Historyscreen}
             options={{
-              headerTitle: 'History',
+              headerTitle: 'HISTORY ',
 
               headerStyle: {
                 backgroundColor: 'lightcoral',
@@ -265,7 +261,6 @@ const styles = StyleSheet.create({
 
     fontSize: 15,
 
-    fontFamily: 'trebuchet MS',
   },
   box: {
     width: '100%',
@@ -273,39 +268,29 @@ const styles = StyleSheet.create({
     height: '83%',
     border: 1,
   },
-  hint: {
-    color: 'green',
-    fontSize: 15,
-  },
-  result: {
-    width: '100%',
-
+  
+  final: {
     marginTop: 10,
     justifyContent: 'space-between',
     padding: 10,
-    borderRadius: 25,
-  },
+     },
   newdata: {
     textAlign: 'left',
     fontSize: 15,
     fontWeight: 'bold',
     color: 'crimson',
   },
-  recordrow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    color: 'white',
+ 
+    hint: {
+    color: 'green',
+    fontSize: 15,
   },
-  
-  ogcolumn: { 
-   
-    marginLeft: '5%' },
 
-  discountcolumn: 
-  { 
-   marginLeft: '8%' },
+ 
+  del: {
+     marginRight: '1px',
+     color:'red',
+     fontWeight:'bold'
 
-  finalcolumn: {
-     marginRight: '1px'
       },
 });
